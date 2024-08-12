@@ -215,4 +215,14 @@
             const code = parseInt(document.getElementById('retrieveInput').value, 10);
             if (savedData.hasOwnProperty(code)) {
                 const savedAmount = savedData[code];
-                document.getElementById('retrievedAmount
+                document.getElementById('retrievedAmount').innerText = `저장된 금액: ${savedAmount.toLocaleString()}원`;
+            } else {
+                alert("유효한 코드입니다. 다시 확인해주세요.");
+            }
+        }
+
+        // 타이머 업데이트 간격 설정 (1초)
+        setInterval(updateTimer, 1000);
+    </script>
+</body>
+</html>
