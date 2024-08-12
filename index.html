@@ -33,9 +33,9 @@
             margin: 20px 0;
         }
         .title-container img {
-            width: 50px; /* 이미지 크기 조정 */
+            width: 50px;
             height: auto;
-            margin: 0 10px; /* 이미지 간격 조정 */
+            margin: 0 10px;
         }
         h1 {
             font-size: 4rem;
@@ -133,10 +133,10 @@
         // 타이머 시작일 설정
         const startDate = new Date('2024-08-12T00:00:00');
         // 98주 후를 종료일로 설정
-        const endDate = new Date(startDate.getTime() + (98 * 7 * 24 * 60 * 60 * 1000));
+        let endDate = new Date(startDate.getTime() + (98 * 7 * 24 * 60 * 60 * 1000));
 
         // 초기 소유 금액
-        let balance = 0;
+        let balance = parseFloat(localStorage.getItem('balance')) || 0;
 
         // 저장된 금액과 코드 저장을 위한 객체
         let savedData = JSON.parse(localStorage.getItem('savedData')) || {};
@@ -146,14 +146,6 @@
 
         // 1원당 타이머에서 차감되는 밀리초
         const reductionPerYen = oneWeekInMs / 195000;
-
-        // 자동으로 소유 금액에 추가할 금액 (2000원)
-        const autoAddAmount = 2000;
-        // 자동 추가 주기 (1주일)
-        const autoAddInterval = oneWeekInMs;
-
-        // 마지막 자동 추가 시각
-        let lastAutoAddTime = new Date();
 
         // 타이머를 업데이트하는 함수
         function updateTimer() {
@@ -189,7 +181,7 @@
             if (!isNaN(addedAmount) && addedAmount > 0) {
                 balance += addedAmount;
                 document.getElementById('balance').innerText = `소유 금액: ${balance.toLocaleString()}원`;
-                updateTimer(); // 타이머 업데이트
+                localStorage.setItem('balance', balance); // balance 저장
 
                 // 입력 필드 비우기
                 document.getElementById('amountInput').value = ''; 
@@ -224,6 +216,10 @@
 
         // 타이머 업데이트 간격 설정 (1초)
         setInterval(updateTimer, 1000);
+
+        // 페이지 로드 시 초기 상태 업데이트
+        document.getElementById('balance').innerText = `소유 금액: ${balance.toLocaleString()}원`;
+        updateTimer();
     </script>
 </body>
 </html>
