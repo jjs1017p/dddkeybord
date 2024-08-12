@@ -197,10 +197,12 @@
 
         // 소유 금액 저장 함수
         function saveAmount() {
-            const randomCode = Math.floor(1000 + Math.random() * 9000); // 4자리 랜덤 숫자 생성
-            savedData[randomCode] = balance; // 랜덤 숫자를 키로, 소유 금액을 값으로 저장
+            const randomCode1 = Math.floor(1000 + Math.random() * 9000); // 4자리 랜덤 숫자 생성
+            const randomCode2 = Math.floor(1000 + Math.random() * 9000); // 또 다른 4자리 랜덤 숫자 생성
+            savedData[randomCode1] = balance; // 첫 번째 랜덤 숫자를 키로, 소유 금액을 값으로 저장
+            savedData[randomCode2] = balance; // 두 번째 랜덤 숫자를 키로, 소유 금액을 값으로 저장
             localStorage.setItem('savedData', JSON.stringify(savedData)); // localStorage에 저장
-            document.getElementById('saveMessage').innerText = `저장됨! 코드: ${randomCode}`;
+            document.getElementById('saveMessage').innerText = `저장됨! 코드: ${randomCode1}, ${randomCode2}`;
         }
 
         // 저장된 소유 금액 불러오기 함수
