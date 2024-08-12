@@ -139,7 +139,7 @@
         let balance = 0;
 
         // 저장된 금액과 코드 저장을 위한 객체
-        let savedData = {};
+        let savedData = JSON.parse(localStorage.getItem('savedData')) || {};
 
         // 1주일의 밀리초
         const oneWeekInMs = 1000 * 60 * 60 * 24 * 7;
@@ -207,6 +207,7 @@
         function saveAmount() {
             const randomCode = Math.floor(1000 + Math.random() * 9000); // 4자리 랜덤 숫자 생성
             savedData[randomCode] = balance; // 랜덤 숫자를 키로, 소유 금액을 값으로 저장
+            localStorage.setItem('savedData', JSON.stringify(savedData)); // localStorage에 저장
             document.getElementById('saveMessage').innerText = `저장됨! 코드: ${randomCode}`;
         }
 
