@@ -73,6 +73,12 @@
             font-size: 1.2rem;
             padding: 5px 10px;
         }
+        .save-container {
+            margin-top: 20px;
+        }
+        .saved-amount-container {
+            margin-top: 20px;
+        }
         .links {
             margin-top: 20px;
             font-size: 1.2rem;
@@ -107,6 +113,15 @@
             <input type="number" id="amountInput" placeholder="금액 입력 (원 단위)" />
             <button onclick="addAmount()">금액 추가</button>
         </div>
+        <div class="save-container">
+            <button onclick="saveAmount()">소유 금액 저장</button>
+            <p id="saveMessage"></p>
+        </div>
+        <div class="saved-amount-container">
+            <input type="number" id="retrieveInput" placeholder="4자리 코드 입력" />
+            <button onclick="retrieveAmount()">저장 금액 불러오기</button>
+            <p id="retrievedAmount"></p>
+        </div>
         <div class="timer" id="timer"></div>
         <div class="links">
             <a href="https://www.youtube.com/watch?v=T6axDYPRXn4" target="_blank">YouTube 리뷰</a>
@@ -122,6 +137,9 @@
 
         // 초기 소유 금액
         let balance = 0;
+
+        // 저장된 금액과 코드 저장을 위한 객체
+        let savedData = {};
 
         // 1주일의 밀리초
         const oneWeekInMs = 1000 * 60 * 60 * 24 * 7;
@@ -185,29 +203,16 @@
             }
         }
 
-        // 자동으로 소유 금액에 추가하는 함수
-        function autoAdd() {
-            const now = new Date();
-            if (now - lastAutoAddTime >= autoAddInterval) {
-                balance += autoAddAmount;
-                document.getElementById('balance').innerText = `소유 금액: ${balance.toLocaleString()}원`;
-                lastAutoAddTime = now; // 마지막 자동 추가 시각 업데이트
-
-                // 자동 추가된 금액에 따른 시간 차감
-                const weeksToAdd = autoAddAmount / 2000;
-                endDate.setTime(endDate.getTime() + weeksToAdd * oneWeekInMs);
-                updateTimer();
-            }
+        // 소유 금액 저장 함수
+        function saveAmount() {
+            const randomCode = Math.floor(1000 + Math.random() * 9000); // 4자리 랜덤 숫자 생성
+            savedData[randomCode] = balance; // 랜덤 숫자를 키로, 소유 금액을 값으로 저장
+            document.getElementById('saveMessage').innerText = `저장됨! 코드: ${randomCode}`;
         }
 
-        // 매주 자동으로 소유 금액 추가
-        setInterval(autoAdd, 1000 * 60 * 60 * 24); // 매일 1회 체크
-
-        // 주기적으로 타이머 업데이트
-        setInterval(updateTimer, 1000); // 매초 업데이트
-
-        // 초기 타이머 및 금액 업데이트
-        updateTimer();
-    </script>
-</body>
-</html>
+        // 저장된 소유 금액 불러오기 함수
+        function retrieveAmount() {
+            const code = parseInt(document.getElementById('retrieveInput').value, 10);
+            if (savedData.hasOwnProperty(code)) {
+                const savedAmount = savedData[code];
+                document.getElementById('retrievedAmount
