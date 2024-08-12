@@ -115,9 +115,10 @@
     </div>
 
     <script>
-        // 타이머 시작일과 종료일 설정
+        // 타이머 시작일 설정
         const startDate = new Date('2024-08-12T00:00:00');
-        const endDate = new Date('2027-10-16T00:00:00');
+        // 98주 후를 종료일로 설정
+        const endDate = new Date(startDate.getTime() + (98 * 7 * 24 * 60 * 60 * 1000));
 
         // 초기 소유 금액
         let balance = 0;
