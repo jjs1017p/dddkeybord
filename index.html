@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레이저 키보드 사기</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-image: url('https://th.bing.com/th/id/OIP.pbvpmw6nTM_v5FeC_pr1bgAAAA?rs=1&pid=ImgDetMain');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #fff;
+        }
+        .container {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            position: absolute;
+            top: 20px;
+        }
+        .title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .title-container img {
+            width: 50px; /* 이미지 크기 조정 */
+            height: auto;
+            margin: 0 10px; /* 이미지 간격 조정 */
+        }
+        h1 {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff, #ffff00);
+            background-size: 400% 400%;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: gradientShift 5s ease infinite;
+            margin: 0;
+        }
+        p {
+            font-size: 2rem;
+            margin: 10px 0;
+        }
+        .interactive {
+            cursor: pointer;
+            color: #ff0;
+            text-decoration: underline;
+        }
+        .timer {
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+        .input-container {
+            margin-top: 20px;
+        }
+        .input-container input {
+            font-size: 1.2rem;
+            padding: 5px;
+            margin-right: 10px;
+        }
+        .input-container button {
+            font-size: 1.2rem;
+            padding: 5px 10px;
+        }
+        .links {
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+        .links a {
+            color: #ff0;
+            text-decoration: underline;
+            margin: 0 15px;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 0%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-container">
+            <img src="https://img.icons8.com/color/1600/razer.png" alt="Razer Logo">
+            <h1>레이저 키보드 사기</h1>
+            <img src="https://img.icons8.com/color/1600/razer.png" alt="Razer Logo">
+        </div>
+        <p>Razer BlackWidow V4 Pro 195,000원</p>
+        <p>
+            목표 금액: 195,000원<br>
+            <span id="balance">소유 금액: 0원</span>
+        </p>
+        <div class="input-container">
+            <input type="number" id="amountInput" placeholder="금액 입력 (원 단위)" />
+            <button onclick="addAmount()">금액 추가</button>
+        </div>
+        <div class="timer" id="timer"></div>
+        <div class="links">
+            <a href="https://www.youtube.com/watch?v=T6axDYPRXn4" target="_blank">YouTube 리뷰</a>
+            <a href="https://www.razer.com/kr-kr/gaming-keyboards/Razer-BlackWidow-V4-X/RZ03-04701500-R3K1" target="_blank">레이저 키보드 구매</a>
+        </div>
+    </div>
+
+    <script>
+        // 타이머 시작일과 종료일 설정
+        const startDate = new Date('2024-08-12T00:00:00');
+        const endDate = new Date('2027-10-16T00:00:00');
+
+        // 초기 소유 금액
+        let balance = 0;
+
+        // 1주일의 밀리초
+        const oneWeekInMs = 1000 * 60 * 60 * 24 * 7;
+
+        // 1원당 타이머에서 차감되는 밀리초
+        const reductionPerYen = oneWeekInMs / 195000;
+
+        // 자동으로 소유 금액에 추가할 금액 (2000원)
+        const autoAddAmount = 2000;
+        // 자동 추가 주기 (1주일)
+        const autoAddInterval = oneWeekInMs;
+
+        // 마지막 자동 추가 시각
+        let lastAutoAddTime = new Date();
+
+        // 타이머를 업데이트하는 함수
+        function updateTimer() {
+            const now = new Date();
+            let timeDifference = endDate - now;
+
+            if (timeDifference <= 0) {
+                document.getElementById('timer').innerHTML = "목표 시간 도달!";
+                return;
+            }
+
+            // 소유 금액에 따른 조정된 종료일 계산
+            const adjustedEndDate = new Date(endDate.getTime() - (balance * reductionPerYen));
+
+            // 남은 시간 계산
+            const totalSeconds = Math.floor((adjustedEndDate - now) / 1000);
+            const days = Math.floor(totalSeconds / (3600 * 24));
+            const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            document.getElementById('timer').innerHTML = `
+                남은 시간: ${days}일 ${hours}시간 ${minutes}분 ${seconds}초<br>
+                목표 날짜: ${adjustedEndDate.toLocaleDateString()}
+            `;
+        }
+
+        // 금액 추가 함수
+        function addAmount() {
+            const input = document.getElementById('amountInput').value;
+            const addedAmount = parseInt(input, 10);
+
+            if (!isNaN(addedAmount) && addedAmount > 0) {
+                balance += addedAmount;
+                document.getElementById('balance').innerText = `소유 금액: ${balance.toLocaleString()}원`;
+                updateTimer(); // 타이머 업데이트
+
+                // 입력 필드 비우기
+                document.getElementById('amountInput').value = ''; 
+
+                // 사용자가 입력한 금액에 따른 시간 차감
+                const weeksToRemove = addedAmount / 2000;
+                endDate.setTime(endDate.getTime() - weeksToRemove * oneWeekInMs);
+                updateTimer();
+            } else {
+                alert("유효한 숫자를 입력하세요.");
+            }
+        }
+
+        // 자동으로 소유 금액에 추가하는 함수
+        function autoAdd() {
+            const now = new Date();
+            if (now - lastAutoAddTime >= autoAddInterval) {
+                balance += autoAddAmount;
+                document.getElementById('balance').innerText = `소유 금액: ${balance.toLocaleString()}원`;
+                lastAutoAddTime = now; // 마지막 자동 추가 시각 업데이트
+
+                // 자동 추가된 금액에 따른 시간 차감
+                const weeksToAdd = autoAddAmount / 2000;
+                endDate.setTime(endDate.getTime() + weeksToAdd * oneWeekInMs);
+                updateTimer();
+            }
+        }
+
+        // 매주 자동으로 소유 금액 추가
+        setInterval(autoAdd, 1000 * 60 * 60 * 24); // 매일 1회 체크
+
+        // 주기적으로 타이머 업데이트
+        setInterval(updateTimer, 1000); // 매초 업데이트
+
+        // 초기 타이머 및 금액 업데이트
+        updateTimer();
+    </script>
+</body>
+</html>
