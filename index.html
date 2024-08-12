@@ -118,7 +118,7 @@
             <p id="saveMessage"></p>
         </div>
         <div class="saved-amount-container">
-            <input type="number" id="retrieveInput" placeholder="4자리 코드 입력" />
+            <input type="number" id="retrieveInput" placeholder="2자리 코드 입력" />
             <button onclick="retrieveAmount()">저장 금액 불러오기</button>
             <p id="retrievedAmount"></p>
         </div>
@@ -197,12 +197,10 @@
 
         // 소유 금액 저장 함수
         function saveAmount() {
-            const randomCode1 = Math.floor(1000 + Math.random() * 9000); // 4자리 랜덤 숫자 생성
-            const randomCode2 = Math.floor(1000 + Math.random() * 9000); // 또 다른 4자리 랜덤 숫자 생성
-            savedData[randomCode1] = balance; // 첫 번째 랜덤 숫자를 키로, 소유 금액을 값으로 저장
-            savedData[randomCode2] = balance; // 두 번째 랜덤 숫자를 키로, 소유 금액을 값으로 저장
+            const randomCode = Math.floor(10 + Math.random() * 90); // 2자리 랜덤 숫자 생성
+            savedData[randomCode] = balance; // 2자리 랜덤 숫자를 키로, 소유 금액을 값으로 저장
             localStorage.setItem('savedData', JSON.stringify(savedData)); // localStorage에 저장
-            document.getElementById('saveMessage').innerText = `저장됨! 코드: ${randomCode1}, ${randomCode2}`;
+            document.getElementById('saveMessage').innerText = `저장됨! 코드: ${randomCode}`;
         }
 
         // 저장된 소유 금액 불러오기 함수
@@ -225,3 +223,4 @@
     </script>
 </body>
 </html>
+
