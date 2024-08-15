@@ -88,6 +88,25 @@
             text-decoration: underline;
             margin: 0 15px;
         }
+        .keyboard {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .key {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
         @keyframes gradientShift {
             0% { background-position: 0% 0%; }
             25% { background-position: 100% 0%; }
@@ -106,12 +125,13 @@
         </div>
         <p>Razer BlackWidow V4 Pro 195,000원</p>
         <p>
-            목표 금액: 195,000원<br>
+            목표 금액: <span id="goalAmount">195,000</span>원<br>
             <span id="balance">소유 금액: 0원</span>
         </p>
         <div class="input-container">
             <input type="number" id="amountInput" placeholder="금액 입력 (원 단위)" />
             <button onclick="addAmount()">금액 추가</button>
+            <button onclick="resetAmount()">소유 금액 초기화</button>
         </div>
         <div class="save-container">
             <button onclick="saveAmount()">소유 금액 저장</button>
@@ -127,100 +147,19 @@
             <a href="https://www.youtube.com/watch?v=T6axDYPRXn4" target="_blank">YouTube 리뷰</a>
             <a href="https://www.razer.com/kr-kr/gaming-keyboards/Razer-BlackWidow-V4-X/RZ03-04701500-R3K1" target="_blank">레이저 키보드 구매</a>
         </div>
+        <div class="keyboard">
+            <div class="key">a</div>
+            <div class="key">s</div>
+            <div class="key">d</div>
+            <div class="key">f</div>
+            <div class="key">g</div>
+            <div class="key">h</div>
+            <div class="key">j</div>
+            <div class="key">k</div>
+            <div class="key">l</div>
+        </div>
     </div>
 
-    <script>
-        // 타이머 시작일 설정
-        const startDate = new Date('2024-08-12T00:00:00');
-        // 98주 후를 종료일로 설정
-        let endDate = new Date(startDate.getTime() + (98 * 7 * 24 * 60 * 60 * 1000));
-
-        // 초기 소유 금액
-        let balance = parseFloat(localStorage.getItem('balance')) || 0;
-
-        // 저장된 금액과 코드 저장을 위한 객체
-        let savedData = JSON.parse(localStorage.getItem('savedData')) || {};
-
-        // 1주일의 밀리초
-        const oneWeekInMs = 1000 * 60 * 60 * 24 * 7;
-
-        // 1원당 타이머에서 차감되는 밀리초
-        const reductionPerYen = oneWeekInMs / 195000;
-
-        // 타이머를 업데이트하는 함수
-        function updateTimer() {
-            const now = new Date();
-            let timeDifference = endDate - now;
-
-            if (timeDifference <= 0) {
-                document.getElementById('timer').innerHTML = "목표 시간 도달!";
-                return;
-            }
-
-            // 소유 금액에 따른 조정된 종료일 계산
-            const adjustedEndDate = new Date(endDate.getTime() - (balance * reductionPerYen));
-
-            // 남은 시간 계산
-            const totalSeconds = Math.floor((adjustedEndDate - now) / 1000);
-            const days = Math.floor(totalSeconds / (3600 * 24));
-            const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-
-            document.getElementById('timer').innerHTML = `
-                남은 시간: ${days}일 ${hours}시간 ${minutes}분 ${seconds}초<br>
-                목표 날짜: ${adjustedEndDate.toLocaleDateString()}
-            `;
-        }
-
-        // 금액 추가 함수
-        function addAmount() {
-            const input = document.getElementById('amountInput').value;
-            const addedAmount = parseInt(input, 10);
-
-            if (!isNaN(addedAmount) && addedAmount > 0) {
-                balance += addedAmount;
-                document.getElementById('balance').innerText = `소유 금액: ${balance.toLocaleString()}원`;
-                localStorage.setItem('balance', balance); // balance 저장
-
-                // 입력 필드 비우기
-                document.getElementById('amountInput').value = ''; 
-
-                // 사용자가 입력한 금액에 따른 시간 차감
-                const weeksToRemove = addedAmount / 2000;
-                endDate.setTime(endDate.getTime() - weeksToRemove * oneWeekInMs);
-                updateTimer();
-            } else {
-                alert("유효한 숫자를 입력하세요.");
-            }
-        }
-
-        // 소유 금액 저장 함수
-        function saveAmount() {
-            const randomCode = Math.floor(10 + Math.random() * 90); // 2자리 랜덤 숫자 생성
-            savedData[randomCode] = balance; // 2자리 랜덤 숫자를 키로, 소유 금액을 값으로 저장
-            localStorage.setItem('savedData', JSON.stringify(savedData)); // localStorage에 저장
-            document.getElementById('saveMessage').innerText = `저장됨! 코드: ${randomCode}`;
-        }
-
-        // 저장된 소유 금액 불러오기 함수
-        function retrieveAmount() {
-            const code = parseInt(document.getElementById('retrieveInput').value, 10);
-            if (savedData.hasOwnProperty(code)) {
-                const savedAmount = savedData[code];
-                document.getElementById('retrievedAmount').innerText = `저장된 금액: ${savedAmount.toLocaleString()}원`;
-            } else {
-                alert("유효한 코드입니다. 다시 확인해주세요.");
-            }
-        }
-
-        // 타이머 업데이트 간격 설정 (1초)
-        setInterval(updateTimer, 1000);
-
-        // 페이지 로드 시 초기 상태 업데이트
-        document.getElementById('balance').innerText = `소유 금액: ${balance.toLocaleString()}원`;
-        updateTimer();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
-
